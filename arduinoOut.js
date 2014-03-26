@@ -14,7 +14,8 @@ window.onload = function() {
 	var PADDLE_X = 90;
 	var PADDLE_Y = 12;
 
-	//Capture mouse wheel events:
+	//Capture game events:
+	var intervalID;
 	var gameRunning = false;
 	
 	//Playing surface
@@ -120,7 +121,7 @@ window.onload = function() {
 
 
 		//Start the game running
-		setInterval(arduinoOutGame,10); //Start the game
+		intervalID = setInterval(arduinoOutGame,10); //Start the game
 	}
 
 	function arduinoOutGame()
@@ -154,6 +155,7 @@ window.onload = function() {
 				ctx.font = "72px Arial";
 				ctx.fillStyle = "red";
 				ctx.fillText("You Lose",180,300);
+				clearInterval(intervalID);
 		}
 
 		//Check paddle reflections
