@@ -73,15 +73,6 @@ window.onload = function() {
 	else bod.e.attachEvent("onmousewheel", MouseWheelHandler);
 
 	function MouseWheelHandler(e) {
-		bgc = bgc + 0x111111;
-		if (bgc == 0x111111) { 
-			//document.body.style.backgroundImage="url('http://i.imgur.com/PLEMDG5.jpg')";
-			gameRunning = true;
-			arduinoOutInit();
-		}
-		else { document.body.style.background = "#" + ("000000" + bgc.toString(16,6)).slice(-6); }
-		
-		//console.log("#" + ("000000" + bgc.toString(16,6)).slice(-6));
 		if (gameRunning) {
 			// cross-browser wheel delta
 			var e = window.event || e;
@@ -89,6 +80,17 @@ window.onload = function() {
 			console.log("mouse delta: %d", delta);
 			arduinoOutMovePaddle(delta);
 		}
+		else {	
+			bgc = bgc + 0x111111;
+			if (bgc == 0xFFFFFF) { 
+				//document.body.style.backgroundImage="url('http://i.imgur.com/PLEMDG5.jpg')";
+				gameRunning = true;
+				arduinoOutInit();
+			}
+			else { document.body.style.background = "#" + ("000000" + bgc.toString(16,6)).slice(-6); }
+		}
+		//console.log("#" + ("000000" + bgc.toString(16,6)).slice(-6));
+		
 		return false;
 	}
 
