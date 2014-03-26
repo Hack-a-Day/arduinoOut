@@ -25,7 +25,7 @@ window.onload = function() {
 	
 	//Setup the ball
 	var wrencher = new Image();			
-	wrencher.src = "jolly-wrencher.png";
+	wrencher.src = "http://hackadaycom.files.wordpress.com/2014/03/jolly-wrencher.png";
 
 	//Ball locations
 	var skullX = 5;
@@ -43,7 +43,7 @@ window.onload = function() {
 	var ard = new Image();
 		// image source:
 		// http://commons.wikimedia.org/wiki/File:Arduino_Diecimila.jpg
-	ard.src = "arduinoDiecimila.png"
+	ard.src = "http://hackadaycom.files.wordpress.com/2014/03/arduinodiecimila.png"
 	var obstacles = new Array();
 	obstacles[0] = new arduinoOutBrick(5,75);
 	obstacles[1] = new arduinoOutBrick(110,75);
