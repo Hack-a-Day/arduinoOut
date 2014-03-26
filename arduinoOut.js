@@ -80,6 +80,7 @@ window.onload = function() {
 			var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
 			console.log("mouse delta: %d", delta);
 			arduinoOutMovePaddle(delta);
+			e.preventDefault();
 		}
 		else {	
 			bgc = bgc + 0x111111;
@@ -87,6 +88,7 @@ window.onload = function() {
 				//document.body.style.backgroundImage="url('http://i.imgur.com/PLEMDG5.jpg')";
 				gameRunning = true;
 				arduinoOutInit();
+				window.scrollTo(0,100);
 			}
 			else { document.body.style.background = "#" + ("000000" + bgc.toString(16,6)).slice(-6); }
 		}
