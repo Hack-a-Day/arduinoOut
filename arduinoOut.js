@@ -146,18 +146,41 @@ window.onload = function() {
 				{
 				console.log("Collision, %d %d %d %d",obstacles[i].x, obstacles[i].y, skullX, skullY);
 				if (speedX < 0)	//Hit left side of obstacle?
-				{ }
+				{
+					if (skullX-speedX > obstacles[i].x+OB_X)
+					{
+					obstacles[i].visible = false;
+					ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+					collisionFlagX = true;
+					}
+				}
 				if (speedX > 0) //Hit right side of obstacle?
-				{ }
+				{
+					if (skullX+BALL_X-speedX < obstacles[i].x)
+					{
+					obstacles[i].visible = false;
+					ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+					collisionFlagX = true;
+					}
+				}
 				if (speedY < 0) //Hit bottom of obstacle?
 				{ 
-							obstacles[i].visible = false;
-							ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
-							collisionFlagY = true;
-
+					if (skullY-speedY > obstacles[i].y+OB_Y)
+					{
+					obstacles[i].visible = false;
+					ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+					collisionFlagY = true;
+					}
 				}
 				if (speedY > 0) //Hit top of obstacle?
-				{ }
+				{
+					if (skullY+BALL_Y-speedY < obstacles[i].y)
+					{
+					obstacles[i].visible = false;
+					ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+					collisionFlagY = true;
+					}
+				}
 }
 			}
 		}
