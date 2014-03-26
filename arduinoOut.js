@@ -134,10 +134,20 @@ window.onload = function() {
 
 		//Check boundaries
 		if ((skullX+BALL_X >= GAME_X) || (skullX<=0)) { collisionFlagX = true; }
-		if ((skullY+BALL_Y >= GAME_Y) || (skullY<=0)) {  collisionFlagY = true; } //FIXME: Bottom shouldn't refelct
+		if ((skullY+BALL_Y >= GAME_Y) || (skullY<=0)) {  collisionFlagY = true; } //FIXME: Bottom shouldn't reflect
 
 		//Check paddle reflections
-		
+		if (skullY+BALL_Y >= pLocY) {
+			if ((pLocX <= skullX && skullX<=pLocX+PADDLE_X)
+				||
+				(pLocX <= skullX+BALL_X && skullX+BALL_X<=pLocX+PADDLE_X))
+				{
+					ctx.fillStyle=cursorColor;
+					ctx.fillRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
+					collisionFlagY = true;
+				}
+				
+		}
 
 		//Check obstacles
 		for (var i=0; i<obstacles.length; i++)
