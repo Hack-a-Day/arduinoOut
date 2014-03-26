@@ -10,6 +10,8 @@ window.onload = function() {
 	var BALL_Y = 20;
 	var OB_X = 100;
 	var OB_Y = 70;
+	var PADDLE_X = 90;
+	var PADDLE_Y = 12;
 	
 	//Playing surface
 	var canvasColor = "#000000";
@@ -23,6 +25,10 @@ window.onload = function() {
 	//Ball locations
 	var skullX = 5;
 	var skullY = 400;
+
+	//Paddle locations
+	var pLocX = 220;
+	var pLocY = GAME_Y-PADDLE_Y-5
 
 	//How fast the ball is moving
 	var speedX = 2;
@@ -86,7 +92,9 @@ window.onload = function() {
 		c.style.align="center";
 		ctx = c.getContext("2d");
 
-
+		//Setup paddle
+		ctx.fillStyle=cursorColor;
+		ctx.fillRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
 
 		//Setup the obstacles
 		ctx.fillStyle=cursorColor;
@@ -96,12 +104,14 @@ window.onload = function() {
 			ctx.drawImage(ard,obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
 		}
 
+
 		//Start the game running
 		setInterval(arduinoOutGame,10); //Start the game
 	}
 
 	function arduinoOutGame()
 	{
+		//Clear ball for moving
 		ctx.clearRect(skullX,skullY,BALL_X,BALL_Y);
 
 		//Switch directions?
@@ -124,64 +134,62 @@ window.onload = function() {
 
 		//Check boundaries
 		if ((skullX+BALL_X >= GAME_X) || (skullX<=0)) { collisionFlagX = true; }
-		if ((skullY+BALL_Y >= GAME_Y) || (skullY<=0)) {  collisionFlagY = true; }
+		if ((skullY+BALL_Y >= GAME_Y) || (skullY<=0)) {  collisionFlagY = true; } //FIXME: Bottom shouldn't refelct
+
+		//Check paddle reflections
+		
 
 		//Check obstacles
 		for (var i=0; i<obstacles.length; i++)
 		{
 			if (obstacles[i].visible) {
-				if (((obstacles[i].y <= skullY && skullY <= obstacles[i].y+OB_Y) || (obstacles[i].y <= skullY+BALL_Y && skullY+BALL_Y <= obstacles[i].y+OB_Y))
-					&&
-					((obstacles[i].x <= skullX && skullX <= obstacles[i].x+OB_X) || (obstacles[i].x <= skullX+BALL_X && skullX+BALL_X <= obstacles[i].x+OB_X)))
-/*
-				   ((obstacles[i].x <= skullX <= obstacles[i].x+OB_X)
-					||	
-				    (obstacles[i].x <= skullX+BALL_X <= obstacles[i].x+OB_X))
-					&&
-				   ((obstacles[i].y <= skullY <= obstacles[i].y+OB_Y)
+				//Feels REALLY convoluted but works:
+				if (((obstacles[i].y <= skullY && skullY <= obstacles[i].y+OB_Y)
 					||
-				    (obstacles[i].y <= skullY+BALL_Y <= obstacles[i].y+OB_Y))
-					)
-*/
+					(obstacles[i].y <= skullY+BALL_Y && skullY+BALL_Y <= obstacles[i].y+OB_Y))
+					&&
+					((obstacles[i].x <= skullX && skullX <= obstacles[i].x+OB_X)
+					||
+					(obstacles[i].x <= skullX+BALL_X && skullX+BALL_X <= obstacles[i].x+OB_X)))
 				{
-				console.log("Collision, %d %d %d %d",obstacles[i].x, obstacles[i].y, skullX, skullY);
-				if (speedX < 0)	//Hit left side of obstacle?
-				{
-					if (skullX-speedX > obstacles[i].x+OB_X)
+					console.log("Collision, %d %d %d %d",obstacles[i].x, obstacles[i].y, skullX, skullY);
+					if (speedX < 0)	//Hit left side of obstacle?
 					{
-					obstacles[i].visible = false;
-					ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
-					collisionFlagX = true;
+						if (skullX-speedX > obstacles[i].x+OB_X)
+						{
+						obstacles[i].visible = false;
+						ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+						collisionFlagX = true;
+						}
+					}
+					if (speedX > 0) //Hit right side of obstacle?
+					{
+						if (skullX+BALL_X-speedX < obstacles[i].x)
+						{
+						obstacles[i].visible = false;
+						ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+						collisionFlagX = true;
+						}
+					}
+					if (speedY < 0) //Hit bottom of obstacle?
+					{ 
+						if (skullY-speedY > obstacles[i].y+OB_Y)
+						{
+						obstacles[i].visible = false;
+						ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+						collisionFlagY = true;
+						}
+					}
+					if (speedY > 0) //Hit top of obstacle?
+					{
+						if (skullY+BALL_Y-speedY < obstacles[i].y)
+						{
+						obstacles[i].visible = false;
+						ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+						collisionFlagY = true;
+						}
 					}
 				}
-				if (speedX > 0) //Hit right side of obstacle?
-				{
-					if (skullX+BALL_X-speedX < obstacles[i].x)
-					{
-					obstacles[i].visible = false;
-					ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
-					collisionFlagX = true;
-					}
-				}
-				if (speedY < 0) //Hit bottom of obstacle?
-				{ 
-					if (skullY-speedY > obstacles[i].y+OB_Y)
-					{
-					obstacles[i].visible = false;
-					ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
-					collisionFlagY = true;
-					}
-				}
-				if (speedY > 0) //Hit top of obstacle?
-				{
-					if (skullY+BALL_Y-speedY < obstacles[i].y)
-					{
-					obstacles[i].visible = false;
-					ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
-					collisionFlagY = true;
-					}
-				}
-}
 			}
 		}
 
