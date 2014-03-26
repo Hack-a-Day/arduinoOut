@@ -148,7 +148,13 @@ window.onload = function() {
 
 		//Check boundaries
 		if ((skullX+BALL_X >= GAME_X) || (skullX<=0)) { collisionFlagX = true; }
-		if (skullY<=0) {  collisionFlagY = true; } //FIXME: Bottom shouldn't reflect
+		if (skullY<=0) {  collisionFlagY = true; }
+		if (skullY > GAME_Y)
+		{
+				ctx.font = "72px Arial";
+				ctx.fillStyle = "red";
+				ctx.fillText("You Lose",180,300);
+		}
 
 		//Check paddle reflections
 		if (skullY+BALL_Y >= pLocY) {
