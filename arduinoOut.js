@@ -1,5 +1,6 @@
 window.onload = function() {
 	
+
 	var bod = {};
 	var bgc = 0x000000;
 
@@ -12,6 +13,9 @@ window.onload = function() {
 	var OB_Y = 70;
 	var PADDLE_X = 90;
 	var PADDLE_Y = 12;
+
+	//Capture mouse wheel events:
+	var gameRunning = false;
 	
 	//Playing surface
 	var canvasColor = "#000000";
@@ -72,11 +76,19 @@ window.onload = function() {
 		bgc = bgc + 0x111111;
 		if (bgc == 0x111111) { 
 			//document.body.style.backgroundImage="url('http://i.imgur.com/PLEMDG5.jpg')";
+			gameRunning = true;
 			arduinoOutInit();
 		}
 		else { document.body.style.background = "#" + ("000000" + bgc.toString(16,6)).slice(-6); }
 		
 		//console.log("#" + ("000000" + bgc.toString(16,6)).slice(-6));
+		if (gameRunning) {
+			// cross-browser wheel delta
+			var e = window.event || e;
+			var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+			console.log("mouse delta: %d", delta);
+			arduinoOutMovePaddle(delta);
+		}
 		return false;
 	}
 
@@ -142,6 +154,7 @@ window.onload = function() {
 				||
 				(pLocX <= skullX+BALL_X && skullX+BALL_X<=pLocX+PADDLE_X))
 				{
+					//Redraw cursor because overlap ball erases portions of it
 					ctx.fillStyle=cursorColor;
 					ctx.fillRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
 					collisionFlagY = true;
@@ -208,6 +221,21 @@ window.onload = function() {
 		if (collisionFlagY) { speedY = -speedY; }//FIXME speed changes
 	}
 
+	function arduinoOutMovePaddle(delta) {
+		//Clear paddle for moving
+		ctx.clearRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
+
+		//Move paddle
+			//Subtracting delta so user experience is intuitive (paddle moves direction you'd expect)
+			//Multiplying delta so that paddle moves relatively quickly
+		pLocX -= delta*20; 
+		if (pLocX < 0) { pLocX = 0; }
+		if (pLocX+PADDLE_X > GAME_X) { pLocX = GAME_X - PADDLE_X; }
+
+		//Redraw paddle
+		ctx.fillStyle=cursorColor;
+		ctx.fillRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
+	}
 	function arduinoOutBrick(x,y)
 	{
 		this.x = x;
