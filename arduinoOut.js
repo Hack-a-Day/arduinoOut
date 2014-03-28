@@ -25,12 +25,12 @@ window.onload = function() {
     wrencher.src = "http://hackadaycom.files.wordpress.com/2014/03/jolly-wrencher.png";
 
     //Ball locations
-    var skullX = 5;
-    var skullY = 400;
+    var skullX;
+    var skullY;
 
     //Paddle locations
-    var pLocX = 220;
-    var pLocY = GAME_Y-PADDLE_Y-5;
+    var pLocX;
+    var pLocY;
 
     //How fast the ball is moving
     var speedX = 2;
@@ -46,6 +46,7 @@ window.onload = function() {
 
     var levels = new Array();
     levels[0] = new arduinoOutLevel(3,6,100,70,5);
+    levels[1] = new arduinoOutLevel(3,8,75,52,4);
 
     var ob_space;
     var ob_width;
@@ -70,26 +71,6 @@ window.onload = function() {
             }
         }
     }
-    /*
-    obstacles[0] = new arduinoOutBrick(5,75);
-    obstacles[1] = new arduinoOutBrick(110,75);
-    obstacles[2] = new arduinoOutBrick(215,75);
-    obstacles[3] = new arduinoOutBrick(320,75);
-    obstacles[4] = new arduinoOutBrick(425,75);
-    obstacles[5] = new arduinoOutBrick(530,75);
-    obstacles[6] = new arduinoOutBrick(5,150);
-    obstacles[7] = new arduinoOutBrick(110,150);
-    obstacles[8] = new arduinoOutBrick(215,150);
-    obstacles[9] = new arduinoOutBrick(320,150);
-    obstacles[10] = new arduinoOutBrick(425,150);
-    obstacles[11] = new arduinoOutBrick(530,150);
-    obstacles[12] = new arduinoOutBrick(5,225);
-    obstacles[13] = new arduinoOutBrick(110,225);
-    obstacles[14] = new arduinoOutBrick(215,225);
-    obstacles[15] = new arduinoOutBrick(320,225);
-    obstacles[16] = new arduinoOutBrick(425,225);
-    obstacles[17] = new arduinoOutBrick(530,225);
-    */
 
     bod.e = document;
 
@@ -136,7 +117,13 @@ window.onload = function() {
         c.style.align="center";
         ctx = c.getContext("2d");
 
+        //Setup Ball
+        skullX = 5;
+        skullY = 400;
+
         //Setup paddle
+        pLocX = 220;
+        pLocY = GAME_Y-PADDLE_Y-5;
         ctx.fillStyle=cursorColor;
         ctx.fillRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
 
@@ -249,6 +236,23 @@ window.onload = function() {
                         collisionFlagY = true;
                         }
                     }
+                    //Check if that was the last visible obstacle
+                    if (isLevelComplete())
+                    {
+                        //Increment Level, Reset game, and return
+                        ++cur_level;
+                        if (cur_level >= levels.length)
+                        {
+                            victory();
+                        }
+                        else
+                        {
+                            //Erase paddle hack
+                            ctx.clearRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
+                            arduinoOutInit();
+                        }
+                        return;
+                    }
                 }
             }
         }
@@ -256,6 +260,11 @@ window.onload = function() {
         //Bounce if there was a collision
         if (collisionFlagX) { speedX = -speedX; } //FIXME speed changes
         if (collisionFlagY) { speedY = -speedY; }//FIXME speed changes
+    }
+
+    function victory()
+    {
+        //TODO: Something when you win
     }
 
     function arduinoOutMovePaddle(delta) {
@@ -286,5 +295,13 @@ window.onload = function() {
         this.width = width;
         this.height = height;
         this.space = space;
+    }
+
+    function isLevelComplete() {
+        for (var i=0; i<obstacles.length; i++)
+        {
+            if (obstacles[i].visible) { return false; }
+        }
+        return true;
     }
 }
