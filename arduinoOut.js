@@ -7,8 +7,10 @@ window.onload = function() {
 	var GAME_Y = 480;
 	var BALL_X = 20;
 	var BALL_Y = 20;
-	var OB_X = 100;
-	var OB_Y = 70;
+	var OB_X = 100;	//This is now a dynamic value FIXME
+	var OB_Y = 70;	//This is now a dynamic value FIXME
+	var OB_Y_OFFSET = 75;
+	var ob_space; //dynamic FIXME
 	var PADDLE_X = 90;
 	var PADDLE_Y = 12;
 
@@ -31,18 +33,44 @@ window.onload = function() {
 
 	//Paddle locations
 	var pLocX = 220;
-	var pLocY = GAME_Y-PADDLE_Y-5
+	var pLocY = GAME_Y-PADDLE_Y-5;
 
 	//How fast the ball is moving
 	var speedX = 2;
 	var speedY = -2;
 
-	//Obstacles
-	var ard = new Image();
+	//Obstacles 
 		// image source:
 		// http://commons.wikimedia.org/wiki/File:Arduino_Diecimila.jpg
+	var ard = new Image();
 	ard.src = "http://hackadaycom.files.wordpress.com/2014/03/arduinodiecimila.png"
-	var obstacles = new Array();
+
+	var cur_level = 0;
+
+	var levels = new Array();
+	levels[0] = new arduinoOutLevel(3,6,100,70,5);
+
+	var obstacles;
+
+	function arduinoOutFillLevel(lv)
+	{
+		obstacles = new Array();
+		for (var row=0; row<levels[lv].rows; row++)
+		{
+			for (var col=0; col<levels[lv].columns; col++)
+			{
+				obstacles[(row*levels[lv].columns) + col] = 
+					new arduinoOutBrick(
+						//left-offset	+ Object width + Middle offsets	
+						ob_space + (OB_X * col) + (col * ob_space),
+						//top-offset+ Object height + Middle offsets
+						OB_Y_OFFSET + (OB_Y * row) + (row * ob_space)
+						);
+						
+			}
+		}
+	}
+	/*
 	obstacles[0] = new arduinoOutBrick(5,75);
 	obstacles[1] = new arduinoOutBrick(110,75);
 	obstacles[2] = new arduinoOutBrick(215,75);
@@ -61,7 +89,7 @@ window.onload = function() {
 	obstacles[15] = new arduinoOutBrick(320,225);
 	obstacles[16] = new arduinoOutBrick(425,225);
 	obstacles[17] = new arduinoOutBrick(530,225);
-	
+	*/
 
 	bod.e = document;
 
@@ -113,6 +141,11 @@ window.onload = function() {
 		ctx.fillRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
 
 		//Setup the obstacles
+		OB_X = levels[cur_level].width;
+		OB_Y = levels[cur_level].height;
+		ob_space = levels[cur_level].space;
+		arduinoOutFillLevel(cur_level);
+	
 		ctx.fillStyle=cursorColor;
 		for (var i=0; i<obstacles.length; i++)
 		{
@@ -245,5 +278,13 @@ window.onload = function() {
 		this.x = x;
 		this.y = y;
 		this.visible = true;
+	}
+
+	function arduinoOutLevel(rows,columns,width,height,space) {
+		this.rows = rows;
+		this.columns = columns;
+		this.width = width;
+		this.height = height;
+		this.space = space;
 	}
 }
