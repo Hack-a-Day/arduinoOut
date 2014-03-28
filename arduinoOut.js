@@ -87,6 +87,8 @@ window.onload = function() {
 				gameRunning = true;
 				arduinoOutInit();
 				window.scrollTo(0,100);	//Move the windows so you can see the game canvas
+				//Start the game running
+				intervalID = setInterval(arduinoOutGame,10); //Start the game
 			}
 			else { document.body.style.background = "#" + ("000000" + bgc.toString(16,6)).slice(-6); }
 		}
@@ -117,10 +119,6 @@ window.onload = function() {
 			//ctx.fillRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
 			ctx.drawImage(ard,obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
 		}
-
-
-		//Start the game running
-		intervalID = setInterval(arduinoOutGame,10); //Start the game
 	}
 
 	function arduinoOutGame()
