@@ -7,10 +7,7 @@ window.onload = function() {
     var GAME_Y = 480;
     var BALL_X = 20;
     var BALL_Y = 20;
-    var OB_X = 100;    //This is now a dynamic value FIXME
-    var OB_Y = 70;    //This is now a dynamic value FIXME
     var OB_Y_OFFSET = 75;
-    var ob_space; //dynamic FIXME
     var PADDLE_X = 90;
     var PADDLE_Y = 12;
 
@@ -50,6 +47,9 @@ window.onload = function() {
     var levels = new Array();
     levels[0] = new arduinoOutLevel(3,6,100,70,5);
 
+    var ob_space;
+    var ob_width;
+    var ob_height;
     var obstacles;
 
     function arduinoOutFillLevel(lv)
@@ -62,9 +62,9 @@ window.onload = function() {
                 obstacles[(row*levels[lv].columns) + col] = 
                     new arduinoOutBrick(
                         //left-offset    + Object width + Middle offsets    
-                        ob_space + (OB_X * col) + (col * ob_space),
+                        ob_space + (ob_width * col) + (col * ob_space),
                         //top-offset+ Object height + Middle offsets
-                        OB_Y_OFFSET + (OB_Y * row) + (row * ob_space)
+                        OB_Y_OFFSET + (ob_height * row) + (row * ob_space)
                         );
                         
             }
@@ -141,16 +141,16 @@ window.onload = function() {
         ctx.fillRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
 
         //Setup the obstacles
-        OB_X = levels[cur_level].width;
-        OB_Y = levels[cur_level].height;
+        ob_width = levels[cur_level].width;
+        ob_height = levels[cur_level].height;
         ob_space = levels[cur_level].space;
         arduinoOutFillLevel(cur_level);
     
         ctx.fillStyle=cursorColor;
         for (var i=0; i<obstacles.length; i++)
         {
-            //ctx.fillRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
-            ctx.drawImage(ard,obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+            //ctx.fillRect(obstacles[i].x,obstacles[i].y,ob_width,ob_height);
+            ctx.drawImage(ard,obstacles[i].x,obstacles[i].y,ob_width,ob_height);
         }
     }
 
@@ -205,20 +205,20 @@ window.onload = function() {
         {
             if (obstacles[i].visible) {
                 //Feels REALLY convoluted but works:
-                if (((obstacles[i].y <= skullY && skullY <= obstacles[i].y+OB_Y)
+                if (((obstacles[i].y <= skullY && skullY <= obstacles[i].y+ob_height)
                     ||
-                    (obstacles[i].y <= skullY+BALL_Y && skullY+BALL_Y <= obstacles[i].y+OB_Y))
+                    (obstacles[i].y <= skullY+BALL_Y && skullY+BALL_Y <= obstacles[i].y+ob_height))
                     &&
-                    ((obstacles[i].x <= skullX && skullX <= obstacles[i].x+OB_X)
+                    ((obstacles[i].x <= skullX && skullX <= obstacles[i].x+ob_width)
                     ||
-                    (obstacles[i].x <= skullX+BALL_X && skullX+BALL_X <= obstacles[i].x+OB_X)))
+                    (obstacles[i].x <= skullX+BALL_X && skullX+BALL_X <= obstacles[i].x+ob_width)))
                 {
                     if (speedX < 0)    //Hit left side of obstacle?
                     {
-                        if (skullX-speedX > obstacles[i].x+OB_X)
+                        if (skullX-speedX > obstacles[i].x+ob_width)
                         {
                         obstacles[i].visible = false;
-                        ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+                        ctx.clearRect(obstacles[i].x,obstacles[i].y,ob_width,ob_height);
                         collisionFlagX = true;
                         }
                     }
@@ -227,16 +227,16 @@ window.onload = function() {
                         if (skullX+BALL_X-speedX < obstacles[i].x)
                         {
                         obstacles[i].visible = false;
-                        ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+                        ctx.clearRect(obstacles[i].x,obstacles[i].y,ob_width,ob_height);
                         collisionFlagX = true;
                         }
                     }
                     if (speedY < 0) //Hit bottom of obstacle?
                     { 
-                        if (skullY-speedY > obstacles[i].y+OB_Y)
+                        if (skullY-speedY > obstacles[i].y+ob_height)
                         {
                         obstacles[i].visible = false;
-                        ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+                        ctx.clearRect(obstacles[i].x,obstacles[i].y,ob_width,ob_height);
                         collisionFlagY = true;
                         }
                     }
@@ -245,7 +245,7 @@ window.onload = function() {
                         if (skullY+BALL_Y-speedY < obstacles[i].y)
                         {
                         obstacles[i].visible = false;
-                        ctx.clearRect(obstacles[i].x,obstacles[i].y,OB_X,OB_Y);
+                        ctx.clearRect(obstacles[i].x,obstacles[i].y,ob_width,ob_height);
                         collisionFlagY = true;
                         }
                     }
