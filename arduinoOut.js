@@ -198,7 +198,10 @@ window.onload = function() {
         {
                 ctx.font = "72px Arial";
                 ctx.fillStyle = "red";
-                ctx.fillText("You Lose",180,300);
+                ctx.fillText("You Lose",162,260);
+                ctx.font = "32px Arial";
+                ctx.fillText("Hordes of Arduino",180,345);
+                ctx.fillText("were too much for you",145,390);
                 clearInterval(intervalID);
         }
 
