@@ -82,6 +82,40 @@ window.onload = function() {
     }
     else bod.e.attachEvent("onmousewheel", MouseWheelHandler);
 
+
+    //Initialize the game
+    arduinoOutInit();
+    ctx.font = "32px Arial";
+    ctx.fillStyle = "blue";
+    ctx.fillText("Space to start",200,200);
+    ctx.fillText("Scroll wheel (or arrows) to move",46,260);
+
+    //Keyboard events
+    window.onkeydown = function(e) {
+        console.log("Key: %d",e.keyCode);
+        if (gameRunning) {
+            //Hack: Left is 37, right is 39
+            //subtract 38 to get -1 or 1
+            //multiply by a negative to
+            //correct direction and applify the effect
+            if (e.keyCode == 37 || e.keyCode == 39) { arduinoOutMovePaddle((e.keyCode-38)*-2); }
+        }
+        else
+        {
+            if (e.keyCode == 32) { runGame(); }
+        }
+        e.preventDefault();
+    }
+
+    function runGame() {
+        gameRunning = true;
+        arduinoOutInit();
+        //window.scrollTo(0,100);    //Move the windows so you can see the game canvas
+        //Start the game running
+        intervalID = setInterval(arduinoOutGame,10); //Start the game
+    }
+
+    //Mouse Events
     function MouseWheelHandler(e) {
         if (gameRunning) {
             // cross-browser wheel delta
@@ -93,11 +127,7 @@ window.onload = function() {
         else {    
             bgc = bgc + 0x111111;
             if (bgc == 0xFFFFFF) { 
-                gameRunning = true;
-                arduinoOutInit();
-                window.scrollTo(0,100);    //Move the windows so you can see the game canvas
-                //Start the game running
-                intervalID = setInterval(arduinoOutGame,10); //Start the game
+                runGame();
             }
             else { document.body.style.background = "#" + ("000000" + bgc.toString(16,6)).slice(-6); }
         }
