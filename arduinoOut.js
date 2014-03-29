@@ -45,8 +45,10 @@ window.onload = function() {
     var cur_level = 0;
 
     var levels = new Array();
-    levels[0] = new arduinoOutLevel(3,6,100,70,5,"#000000");
-    levels[1] = new arduinoOutLevel(3,8,75,52,4,"#FF0000");
+    levels[0] = new arduinoOutLevel(3,6,100,70,5,"black");
+    levels[1] = new arduinoOutLevel(3,8,75,52,4,"grey");
+    levels[2] = new arduinoOutLevel(5,12,50,35,3,"silver");
+    levels[3] = new arduinoOutLevel(7,12,50,35,3,"teal");
 
     var ob_space;
     var ob_width;
@@ -85,8 +87,11 @@ window.onload = function() {
 
     //Initialize the game
     arduinoOutInit();
-    ctx.font = "32px Arial";
+    ctx.font = "72px Arial";
+    ctx.fillStyle = "teal";
+    ctx.fillText("Arduino Out",100, 140);
     ctx.fillStyle = "blue";
+    ctx.font = "32px Arial";
     ctx.fillText("Space to start",200,200);
     ctx.fillText("Scroll wheel (or arrows) to move",46,260);
 
@@ -215,8 +220,8 @@ window.onload = function() {
                     ctx.fillStyle=cursorColor;
                     ctx.fillRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
                     collisionFlagY = true;
-
-                    //TODO: Adjust speed
+                    
+                    //Adjust speed
                     var ballMed = skullX + (BALL_X/2);
                     var padLeft = pLocX + (PADDLE_X/3);
                     var padRight = pLocX + ((PADDLE_X/3)*2);
@@ -309,7 +314,13 @@ window.onload = function() {
 
     function victory()
     {
-        //TODO: Something when you win
+        ctx.font = "72px Arial";
+        ctx.fillStyle = "black";
+        ctx.fillText("Victory!!",162,260);
+        ctx.font = "32px Arial";
+        ctx.fillText("Your nightmare is over.",130,345);
+        ctx.fillText("Arduinos are gone... for now",95,390);
+        clearInterval(intervalID);
     }
 
     function arduinoOutMovePaddle(delta) {
