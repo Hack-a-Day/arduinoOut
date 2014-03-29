@@ -33,8 +33,8 @@ window.onload = function() {
     var pLocY;
 
     //How fast the ball is moving
-    var speedX = 2;
-    var speedY = -2;
+    var speedX;
+    var speedY;
 
     //Obstacles 
         // image source:
@@ -137,14 +137,6 @@ window.onload = function() {
 
     function arduinoOutInit()
     {
-        //FIXME -- don't creat multiple canvases
-        /*
-        var gameboard = document.getElementById('canvas');
-        document.body.appendChild(gameboard);
-        gameboard.id = "hack";
-        gameboard.width = GAME_X;
-        gameboard.height = GAME_Y;
-        */
         var c = document.getElementById("arduinoOut");
         c.width = GAME_X;
         c.height = GAME_Y;
@@ -155,6 +147,8 @@ window.onload = function() {
         //Setup Ball
         skullX = 5;
         skullY = 400;
+        speedX = 2;
+        speedY = -2;
 
         //Setup paddle
         pLocX = 220;
@@ -218,6 +212,13 @@ window.onload = function() {
                     ctx.fillStyle=cursorColor;
                     ctx.fillRect(pLocX,pLocY,PADDLE_X,PADDLE_Y);
                     collisionFlagY = true;
+
+                    //TODO: Adjust speed
+                    var ballMed = skullX + (BALL_X/2);
+                    var padLeft = pLocX + (PADDLE_X/3);
+                    var padRight = pLocX + ((PADDLE_X/3)*2);
+                    if (ballMed < padLeft) { changeSpeed(-1); }
+                    else if (ballMed > padRight) { changeSpeed(1); }
                 }
                 
         }
@@ -295,6 +296,12 @@ window.onload = function() {
         //Bounce if there was a collision
         if (collisionFlagX) { speedX = -speedX; } //FIXME speed changes
         if (collisionFlagY) { speedY = -speedY; }//FIXME speed changes
+    }
+
+    function changeSpeed(amount) {
+        speedX += amount;
+        if (speedX < -5) { speedX = -5; }
+        if (speedX > 5) {speedX = 5; }
     }
 
     function victory()
