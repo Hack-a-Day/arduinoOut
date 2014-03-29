@@ -108,12 +108,16 @@ window.onload = function() {
     function arduinoOutInit()
     {
         //FIXME -- don't creat multiple canvases
-        var gameboard = document.createElement('canvas');
+        /*
+        var gameboard = document.getElementById('canvas');
         document.body.appendChild(gameboard);
         gameboard.id = "hack";
         gameboard.width = GAME_X;
         gameboard.height = GAME_Y;
-        var c = document.getElementById("hack");
+        */
+        var c = document.getElementById("arduinoOut");
+        c.width = GAME_X;
+        c.height = GAME_Y;
         c.style.background = levels[cur_level].bgcolor;
         c.style.align="center";
         ctx = c.getContext("2d");
