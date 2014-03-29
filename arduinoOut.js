@@ -16,7 +16,7 @@ window.onload = function() {
     var gameRunning = false;
     
     //Playing surface
-    var canvasColor = "#000000";
+    var canvasColor;
     var cursorColor = "#0000FF";
     var ctx;
     
@@ -45,8 +45,8 @@ window.onload = function() {
     var cur_level = 0;
 
     var levels = new Array();
-    levels[0] = new arduinoOutLevel(3,6,100,70,5);
-    levels[1] = new arduinoOutLevel(3,8,75,52,4);
+    levels[0] = new arduinoOutLevel(3,6,100,70,5,"#000000");
+    levels[1] = new arduinoOutLevel(3,8,75,52,4,"#FF0000");
 
     var ob_space;
     var ob_width;
@@ -107,13 +107,14 @@ window.onload = function() {
 
     function arduinoOutInit()
     {
+        //FIXME -- don't creat multiple canvases
         var gameboard = document.createElement('canvas');
         document.body.appendChild(gameboard);
         gameboard.id = "hack";
         gameboard.width = GAME_X;
         gameboard.height = GAME_Y;
         var c = document.getElementById("hack");
-        c.style.background = canvasColor;
+        c.style.background = levels[cur_level].bgcolor;
         c.style.align="center";
         ctx = c.getContext("2d");
 
@@ -289,12 +290,13 @@ window.onload = function() {
         this.visible = true;
     }
 
-    function arduinoOutLevel(rows,columns,width,height,space) {
+    function arduinoOutLevel(rows,columns,width,height,space, bgcolor) {
         this.rows = rows;
         this.columns = columns;
         this.width = width;
         this.height = height;
         this.space = space;
+        this.bgcolor = bgcolor;
     }
 
     function isLevelComplete() {
